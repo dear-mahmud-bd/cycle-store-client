@@ -1,12 +1,40 @@
 import { Link, NavLink } from "react-router-dom";
 import Logo from "../../../public/logo.svg";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  signOut,
+  selectCurrentUser,
+} from "../../redux/features/auth/authSlice";
+import Swal from "sweetalert2";
+import { showToast } from "../../utils/useToast";
 
 const Navbar = () => {
+  const user = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
+  console.log(user);
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You want to SignOut`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33333",
+      cancelButtonColor: "#008000",
+      confirmButtonText: "Yes!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(signOut());
+        showToast("success", "Sign-out successfully");
+      }
+    });
+  };
+
   const navLinks = (
     <>
       <li>
         <NavLink to={`/all-cycle`} className={`font-semibold`}>
-          <a>All Cycle</a>
+          <p>All Cycle</p>
         </NavLink>
       </li>
     </>
@@ -52,38 +80,43 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1">{navLinks}</ul>
       </div>
       <div className="navbar-end">
-        <Link to={`/sign-in`} className="btn">Sign In</Link>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+        {user ? (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full ring ring-offset-2 ring-gray-400">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://i.ibb.co.com/jD1GTj4/user.png"
+                />
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <Link to={`/profile`} className="justify-between">
+                  Profile
+                  <span className="badge">New</span>
+                </Link>
+              </li>
+              <li>
+                <Link to={`/settings`}>Settings</Link>
+              </li>
+              <li>
+                <p onClick={handleSignOut}>Sign Out</p>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
-        </div>
+        ) : (
+          <Link to={`/sign-in`} className="btn">
+            Sign In
+          </Link>
+        )}
       </div>
     </div>
   );
