@@ -5,6 +5,11 @@ import SignUp from "../pages/signUpSignIn/SignUp";
 import Home from "../pages/home/Home";
 import AdminRoute from "./AdminRoute";
 import AllProducts from "../pages/products/AllProducts";
+import ProtectedRoute from "./ProtectedRoute";
+import ProductDetails from "../components/Product/ProductDetails";
+import Dashboard from "../components/shared/Dashboard";
+import UserProfile from "../pages/Private/UserProfile";
+import UserOrderHistory from "../pages/Private/UserOrderHistory";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +18,8 @@ const router = createBrowserRouter([
     errorElement: <h1>Not Found</h1>,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/all-cycle", element: <AllProducts/> },
+      { path: "/all-cycle", element: <AllProducts /> },
+      { path: "/all-cycle/:id", element: <ProductDetails /> },
       { path: "/sign-in", element: <SignIn /> },
       { path: "/sign-up", element: <SignUp /> },
       { path: "*", element: <h1>Not Found</h1> },
@@ -22,9 +28,9 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: (
-          <AdminRoute role="admin">
+          <ProtectedRoute>
             <h1>Profile</h1>
-          </AdminRoute>
+          </ProtectedRoute>
         ),
       },
       {
@@ -35,6 +41,29 @@ const router = createBrowserRouter([
           </AdminRoute>
         ),
       },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: (
+      <ProtectedRoute>
+        <Dashboard/>
+      </ProtectedRoute>
+    ),
+    errorElement: <h1>Not Found</h1>,
+    children: [
+      { path: "", element: <UserProfile/> },
+      { path: "profile", element: <UserProfile/> },
+      { path: "my-order-history", element: <UserOrderHistory/> },
+
+      // Admin Route...
+      { path: 'all-users', element: <AdminRoute role="admin"> <h1>All user</h1> </AdminRoute> },
+      { path: 'all-payments', element: <AdminRoute role="admin"> <h1>All payments</h1> </AdminRoute> },
+      { path: 'all-orders', element: <AdminRoute role="admin"> <h1>All orders</h1> </AdminRoute> },
+      { path: 'add-product', element: <AdminRoute role="admin"> <h1>Add Product</h1> </AdminRoute> },
+      { path: 'manage-products', element: <AdminRoute role="admin"> <h1>Manage Product</h1> </AdminRoute> },
+
+      { path: "*", element: <h1>Not Found</h1> },
     ],
   },
 ]);

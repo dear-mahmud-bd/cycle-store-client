@@ -9,7 +9,13 @@ const productApi = baseApi.injectEndpoints({
         params,
       }),
     }),
+    getASingleProductById: builder.query({
+      query: (id) => ({
+        url: `/products/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = productApi;
+export const { useGetProductsQuery, useGetASingleProductByIdQuery } = productApi;

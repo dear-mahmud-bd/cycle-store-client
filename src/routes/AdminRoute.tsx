@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { signOut, useCurrentToken } from "../redux/features/auth/authSlice";
+import { selectCurrentUser, signOut, useCurrentToken } from "../redux/features/auth/authSlice";
 import { verifyToken } from "../utils/verifyToken";
 import { Navigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ type TAdminRoute = {
 
 const AdminRoute = ({ children, role }: TAdminRoute) => {
   const token = useAppSelector(useCurrentToken);
+  const currentUser = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
 
   if (!token) {
@@ -21,7 +22,11 @@ const AdminRoute = ({ children, role }: TAdminRoute) => {
   // Decode and check token validity
   const user = verifyToken(token);
 
-  if (!user) {
+  // console.log('token admin: ',user);
+  // console.log('token user: ',currentUser);
+
+
+  if (!user || (user?.role !== currentUser?.role)) {
     console.warn("Invalid or expired token");
     dispatch(signOut());
     return <Navigate to="/sign-in" replace={true} />;

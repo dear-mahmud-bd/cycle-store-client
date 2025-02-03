@@ -1,5 +1,6 @@
-import Building from '../../../public/buliding-sktech.png'
-import Cycle from '../../../public/cycle-ride.png'
+import { Link } from "react-router-dom";
+import Building from "../../../public/buliding-sktech.png";
+import Cycle from "../../../public/cycle-ride.png";
 
 const Banner = () => {
   return (
@@ -22,11 +23,10 @@ const Banner = () => {
                 Your journey to the genuine begins here.
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-5">
-                <a>
-                  <button type="button" className="btn">
-                    Preorder now
-                  </button>
-                </a>
+                <Link to={`/all-cycle`} type="button" className="btn">
+                  See Details
+                </Link>
+
                 <a className="flex items-center gap-2.5 text-sm font-medium transition hover:opacity-80">
                   <span>Book test ride</span>
                   <div className="grid size-10 place-content-center rounded-full bg-success text-white">
@@ -37,9 +37,9 @@ const Banner = () => {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="size-5"
                     >
                       <path d="M7 7h10v10" />

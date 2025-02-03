@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom";
+
 type ProductProps = {
   product: {
+    _id: string;
     name: string;
     brand: string;
     inStock: boolean;
@@ -9,8 +12,8 @@ type ProductProps = {
   };
 };
 
-const ProductCard = ({ product }: ProductProps)=> {
-  const { name, brand, inStock, price, type, image } = product;
+const ProductCard = ({ product }: ProductProps) => {
+  const { _id, name, brand, inStock, price, type, image } = product;
 
   return (
     <div className="flex flex-col overflow-hidden rounded-[10px] bg-[url(../../../public/collection-bg.jpg)] bg-cover bg-no-repeat">
@@ -38,9 +41,9 @@ const ProductCard = ({ product }: ProductProps)=> {
           </p>
           <p className="text-lg font-semibold text-gary-600">$ {price}</p>
         </div>
-        <a className="btn bg-gary-600 px-4 rounded-lg transition hover:bg-gary-700">
+        <Link to={`/all-cycle/${_id}`} className="btn bg-gary-600 px-4 rounded-lg transition hover:bg-gary-700">
           View Details
-        </a>
+        </Link>
       </div>
     </div>
   );

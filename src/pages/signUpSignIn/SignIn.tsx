@@ -24,8 +24,8 @@ const SignIn = () => {
       const user = verifyToken(res?.data?.token);
       console.log("Decoded User:", user);
       dispatch(setUser({ user, token: res?.data?.token }));
+      navigate(location?.state ? location.state : "/dashboard");
       showToast("success", "Signin Successful!");
-      navigate(location?.state ? location.state : "/profile");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(
