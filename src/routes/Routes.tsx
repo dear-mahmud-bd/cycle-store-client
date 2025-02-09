@@ -10,6 +10,11 @@ import ProductDetails from "../components/Product/ProductDetails";
 import Dashboard from "../components/shared/Dashboard";
 import UserProfile from "../pages/Private/UserProfile";
 import UserOrderHistory from "../pages/Private/UserOrderHistory";
+import AllOrders from "../pages/Admin/AllOrders";
+import AllUsers from "../pages/Admin/AllUsers";
+import AddProduct from "../pages/Admin/AddProduct";
+import ManageProduct from "../pages/Admin/ManageProduct";
+import ManageSingleProduct from "../pages/Admin/ManageSingleProduct";
 
 const router = createBrowserRouter([
   {
@@ -24,23 +29,6 @@ const router = createBrowserRouter([
       { path: "/sign-up", element: <SignUp /> },
       { path: "*", element: <h1>Not Found</h1> },
 
-      // This are private route...
-      {
-        path: "/profile",
-        element: (
-          <ProtectedRoute>
-            <h1>Profile</h1>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/admin",
-        element: (
-          <AdminRoute role="admin">
-            <h1>This is Admin...</h1>
-          </AdminRoute>
-        ),
-      },
     ],
   },
   {
@@ -57,11 +45,11 @@ const router = createBrowserRouter([
       { path: "my-order-history", element: <UserOrderHistory/> },
 
       // Admin Route...
-      { path: 'all-users', element: <AdminRoute role="admin"> <h1>All user</h1> </AdminRoute> },
-      { path: 'all-payments', element: <AdminRoute role="admin"> <h1>All payments</h1> </AdminRoute> },
-      { path: 'all-orders', element: <AdminRoute role="admin"> <h1>All orders</h1> </AdminRoute> },
-      { path: 'add-product', element: <AdminRoute role="admin"> <h1>Add Product</h1> </AdminRoute> },
-      { path: 'manage-products', element: <AdminRoute role="admin"> <h1>Manage Product</h1> </AdminRoute> },
+      { path: 'all-users', element: <AdminRoute role="admin"> <AllUsers/> </AdminRoute> },
+      { path: 'all-orders', element: <AdminRoute role="admin"> <AllOrders/> </AdminRoute> },
+      { path: 'add-product', element: <AdminRoute role="admin"> <AddProduct/> </AdminRoute> },
+      { path: 'manage-products', element: <AdminRoute role="admin"> <ManageProduct/> </AdminRoute> },
+      { path: 'manage-products/:id', element: <AdminRoute role="admin"> <ManageSingleProduct/> </AdminRoute> },
 
       { path: "*", element: <h1>Not Found</h1> },
     ],

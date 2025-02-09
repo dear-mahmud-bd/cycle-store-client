@@ -74,14 +74,6 @@ const Dashboard = () => {
                       </li>
                       <li>
                         <NavLink
-                          to="all-payments"
-                          className={({ isActive }) => addClass(isActive)}
-                        >
-                          All payments
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
                           to="all-orders"
                           className={({ isActive }) => addClass(isActive)}
                         >
