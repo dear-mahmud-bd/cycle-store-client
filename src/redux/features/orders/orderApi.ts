@@ -20,7 +20,21 @@ const productApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, newStatus, token }) => ({
+        url: `/orders/${orderId}/status`,
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: { status: newStatus },
+      }),
+    }),
   }),
 });
 
-export const { useGetAllOrdersQuery, useGetUserOrdersQuery } = productApi;
+export const {
+  useGetAllOrdersQuery,
+  useGetUserOrdersQuery,
+  useUpdateOrderStatusMutation,
+} = productApi;

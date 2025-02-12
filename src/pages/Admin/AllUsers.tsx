@@ -31,8 +31,8 @@ const AllUsers = () => {
               <th className="border border-gray-300 p-2">#</th>
               <th className="border border-gray-300 p-2">Name</th>
               <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Role</th>
-              <th className="border border-gray-300 p-2">Actions</th>
+              <th className="border border-gray-300 p-2">Activity</th>
+              <th className="border border-gray-300 p-2">Role(Actions)</th>
             </tr>
           </thead>
           <tbody>
@@ -41,11 +41,13 @@ const AllUsers = () => {
                 <td className="border border-gray-300 p-2">{index + 1}</td>
                 <td className="border border-gray-300 p-2">{user.name}</td>
                 <td className="border border-gray-300 p-2">{user.email}</td>
-                <td className="border border-gray-300 p-2">{user.role}</td>
+                <td className="border border-gray-300 p-2">
+                  <span className="btn btn-xs">{user.isBlocked ? "Blocked" : "Active"}</span>
+                </td>
                 <td className="border border-gray-300 p-2">
                   <select
                     value={user.role}
-                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
                     className="select select-sm border rounded p-1"
                     disabled={user.role === "admin"}
                   >

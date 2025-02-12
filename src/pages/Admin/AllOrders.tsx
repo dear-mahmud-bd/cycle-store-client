@@ -1,27 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
-import { useGetAllOrdersQuery } from "../../redux/features/orders/orderApi";
+import {
+  useGetAllOrdersQuery,
+  useUpdateOrderStatusMutation,
+} from "../../redux/features/orders/orderApi";
 import { useAppSelector } from "../../redux/hooks";
+import Swal from "sweetalert2";
+import { showToast } from "../../utils/useToast";
 
 const AllOrders = () => {
   const token = useAppSelector(useCurrentToken);
-  const { data, isLoading, error } = useGetAllOrdersQuery(token);
+  const { data, isLoading, error, refetch } = useGetAllOrdersQuery(token);
   // const [updateOrderStatus] = useUpdateOrderStatusMutation();
   console.log(data);
 
-  if (isLoading) return <p>Loading orders...</p>;
-  if (error) return <p>Error fetching orders.</p>;
+  const [updateOrderStatus, { isLoading: isUpdating }] =
+    useUpdateOrderStatusMutation();
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You want to change status as '${newStatus}'`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#008000",
+      cancelButtonColor: "#d33333",
+      confirmButtonText: "Yes!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(orderId, newStatus);
+        try {
+          await updateOrderStatus({ orderId, newStatus, token }).unwrap();
+          showToast("success", `Order ${newStatus}`);
+          refetch();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+          console.log(err);
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    // try {
-    //   await updateOrderStatus({ orderId, status: newStatus });
-    //   alert("Order status updated successfully");
-    // } catch (err) {
-    //   alert("Failed to update status");
-    // }
+          showToast("error", "Something Wrong try again");
+        }
+      }
+    });
   };
 
+  if (isLoading) return <p>Loading orders...</p>;
+  if (error) return <p>Error fetching orders.</p>;
   return (
     <div className="">
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">
@@ -60,10 +83,11 @@ const AllOrders = () => {
                   <select
                     value={order.status}
                     onChange={(e) =>
-                      handleStatusChange(order.id, e.target.value)
+                      handleStatusChange(order._id, e.target.value)
                     }
                     className="border select select-sm rounded p-1"
                     disabled={
+                      isUpdating ||
                       order.status === "delivered" ||
                       order.status === "cancelled"
                     }
