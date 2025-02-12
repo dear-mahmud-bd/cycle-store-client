@@ -25,7 +25,45 @@ const authApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    getUserByEmail: builder.query({
+      query: ({ email, token }) => ({
+        url: `/auth/${email}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+      providesTags: ["User"],
+    }),
+    updateUserName: builder.mutation({
+      query: ({ email, name, token }) => ({
+        url: `/auth/${email}/update-name`,
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: { name },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    changePassword: builder.mutation({
+      query: ({ email, oldPassword, newPassword, token }) => ({
+        url: "/auth/change-password",
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: { email, oldPassword, newPassword },
+      }),
+    }),
   }),
 });
 
-export const { useSigninMutation, useSignupMutation, useGetAllUsersQuery } = authApi;
+export const {
+  useSigninMutation,
+  useSignupMutation,
+  useGetAllUsersQuery,
+  useGetUserByEmailQuery,
+  useUpdateUserNameMutation,
+  useChangePasswordMutation,
+} = authApi;

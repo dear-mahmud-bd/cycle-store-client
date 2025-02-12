@@ -42,7 +42,7 @@ const AllOrders = () => {
           </thead>
           <tbody>
             {data?.data.map((order: any) => (
-              <tr key={order.id} className="text-center">
+              <tr key={order._id} className="text-center">
                 <td className="border border-gray-300 p-2">{order._id}</td>
                 <td className="border border-gray-300 p-2">{order.email}</td>
 
@@ -69,7 +69,7 @@ const AllOrders = () => {
                     }
                   >
                     <option value="pending">pending</option>
-                    <option value="shipped">shipped</option>
+                    <option value="approved">approved</option>
                     <option value="delivered">delivered</option>
                     <option value="cancelled">cancelled</option>
                   </select>

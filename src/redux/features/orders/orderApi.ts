@@ -11,7 +11,16 @@ const productApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    getUserOrders: builder.query({
+      query: ({ email, token }) => ({
+        url: `/orders/${email}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetAllOrdersQuery } = productApi;
+export const { useGetAllOrdersQuery, useGetUserOrdersQuery } = productApi;

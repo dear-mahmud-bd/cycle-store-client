@@ -25,7 +25,7 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto my-5">
+    <div className="max-w-5xl mx-auto">
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">
         <h1 className="text-center text-4xl font-bold">Add a Product</h1>
       </div>

@@ -7,14 +7,16 @@ import {
   useCurrentToken,
 } from "../../redux/features/auth/authSlice";
 import { verifyToken } from "../../utils/verifyToken";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
   const currentToken = useAppSelector(useCurrentToken);
   const currentUser = useAppSelector(selectCurrentUser);
   const user = verifyToken(currentToken as string);
-  const isAdmin = (user?.role === currentUser?.role) && (currentUser?.role === "admin");
+  const isAdmin =
+    user?.role === currentUser?.role && currentUser?.role === "admin";
   console.log(isAdmin);
-  
 
   const addClass = (isActive: boolean) => (isActive ? "bg-gray-200" : "");
   return (
@@ -35,6 +37,7 @@ const Dashboard = () => {
               />
               <div className="drawer-content p-4">
                 <Outlet></Outlet>
+                <ToastContainer />
               </div>
               <div className="drawer-side">
                 <label

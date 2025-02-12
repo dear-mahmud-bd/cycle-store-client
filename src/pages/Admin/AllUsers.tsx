@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetAllUsersQuery } from "../../redux/features/auth/authApi";
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
 import { useAppSelector } from "../../redux/hooks";
@@ -20,7 +21,7 @@ const AllUsers = () => {
   return (
     <div className="">
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">
-        <h1 className="text-center text-4xl font-bold">All Userss</h1>
+        <h1 className="text-center text-4xl font-bold">All Users</h1>
       </div>
 
       <div className="overflow-x-auto">
@@ -36,7 +37,7 @@ const AllUsers = () => {
           </thead>
           <tbody>
             {users.map((user: any, index: number) => (
-              <tr key={user.id} className="text-center">
+              <tr key={user._id} className="text-center">
                 <td className="border border-gray-300 p-2">{index + 1}</td>
                 <td className="border border-gray-300 p-2">{user.name}</td>
                 <td className="border border-gray-300 p-2">{user.email}</td>
