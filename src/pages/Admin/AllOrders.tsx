@@ -92,7 +92,7 @@ const AllOrders = () => {
                       order.status === "cancelled"
                     }
                   >
-                    <option value="pending">pending</option>
+                    <option value="pending" disabled={order.status==='approved'}>pending</option>
                     <option value="approved">approved</option>
                     <option value="delivered">delivered</option>
                     <option value="cancelled">cancelled</option>

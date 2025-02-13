@@ -56,6 +56,28 @@ const authApi = baseApi.injectEndpoints({
         body: { email, oldPassword, newPassword },
       }),
     }),
+    updateUserBlockStatus: builder.mutation({
+      query: ({ userId, isBlocked, token }) => ({
+        url: "/auth/update-block-status",
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: { userId, isBlocked },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    updateUserRole: builder.mutation({
+      query: ({ userId, role, token }) => ({
+        url: "/auth/update-role",
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: { userId, role },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -66,4 +88,6 @@ export const {
   useGetUserByEmailQuery,
   useUpdateUserNameMutation,
   useChangePasswordMutation,
+  useUpdateUserBlockStatusMutation,
+  useUpdateUserRoleMutation,
 } = authApi;
