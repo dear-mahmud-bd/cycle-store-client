@@ -9,10 +9,11 @@ import {
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { showToast } from "../../utils/useToast";
+import Loading from "../../components/shared/Loading";
 
 const AllUsers = () => {
   const token = useAppSelector(useCurrentToken);
-  const { data, isLoading, error, refetch } = useGetAllUsersQuery(token);
+  const { data, isLoading, refetch } = useGetAllUsersQuery(token);
   const [updateUserBlockStatus, { isLoading: isUpdatingBlock }] =
     useUpdateUserBlockStatusMutation();
   const [updateUserRole, { isLoading: isUpdatingRole }] =
@@ -78,8 +79,7 @@ const AllUsers = () => {
   };
 
   if (isLoading || isUpdatingBlock || isUpdatingRole)
-    return <p>Loading user details...</p>;
-  if (error) return <p>Error fetching user details.</p>;
+    return <Loading/>;
 
   return (
     <div className="">

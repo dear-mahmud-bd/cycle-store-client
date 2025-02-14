@@ -1,17 +1,24 @@
 import { FieldValues, useForm } from "react-hook-form";
 import { useState } from "react";
+import { useCreateProductMutation } from "../../redux/features/product/productApi";
+import { showToast } from "../../utils/useToast";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentToken } from "../../redux/features/auth/authSlice";
 
 const AddProduct = () => {
+  const token = useAppSelector(useCurrentToken);
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
     setValue,
+    reset,
   } = useForm();
-
   watch("quantity", 0);
   const [inStock, setInStock] = useState(false);
+
+  const [createProduct, { isLoading }] = useCreateProductMutation();
 
   // Update inStock based on quantity
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,8 +27,21 @@ const AddProduct = () => {
     setValue("inStock", qty > 0);
   };
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
+  const onSubmit = async (data: FieldValues) => {
+    try {
+      const productData = {
+        ...data,
+        price: parseFloat(data.price),
+        quantity: parseInt(data.quantity, 10),
+      };
+      console.log(productData);
+
+      await createProduct({ productData, token }).unwrap();
+      showToast("success", "Product Added Succesfully!");
+      reset();
+    } catch (error) {
+      showToast("error", error?.data?.message || "Failed to add product.");
+    }
   };
 
   return (
@@ -41,11 +61,6 @@ const AddProduct = () => {
                   value: 3,
                   message: "Name must be at least 3 characters long",
                 },
-                validate: {
-                  twoWords: (value) =>
-                    value.trim().split(/\s+/).length >= 2 ||
-                    "Name must contain at least 2 words",
-                },
               })}
               type="text"
               className={`input input-sm input-bordered w-full ${
@@ -63,7 +78,7 @@ const AddProduct = () => {
           <div className="col-span-12 sm:col-span-4">
             <label className="block text-sm font-semibold">Type</label>
             <select
-              {...register("category", { required: "Select a Category" })}
+              {...register("type", { required: "Select a Category" })}
               className={`w-full select select-bordered select-sm max-w-xs mb-2 ${
                 errors.category ? "input-error" : ""
               }`}
@@ -75,9 +90,9 @@ const AddProduct = () => {
               <option value="BMX">BMX</option>
               <option value="Electric">Electric</option>
             </select>
-            {errors.category && (
+            {errors.type && (
               <p className="text-red-500 text-sm">
-                {errors.category.message as string}
+                {errors.type.message as string}
               </p>
             )}
           </div>
@@ -103,22 +118,21 @@ const AddProduct = () => {
           <div className="col-span-12 sm:col-span-4">
             <label className="block text-sm font-semibold">Image URL</label>
             <input
-              {...register("imageUrl", {
+              {...register("image", {
                 required: "Image URL is required",
                 pattern: {
                   value: /^(https?:\/\/.*\.(?:jpeg|jpg|png|gif|bmp|webp))$/i,
-                  message:
-                    "Image must be a valid URL with a valid file extension (e.g., .jpg, .png)",
+                  message: "Enter a valid image URL (i.e., .jpeg, .jpg, .png, .gif, .bmp, .webp)",
                 },
               })}
               type="text"
               className={`input input-sm input-bordered w-full ${
-                errors.imageUrl ? "input-error" : ""
+                errors.image ? "input-error" : ""
               }`}
             />
-            {errors.imageUrl && (
+            {errors.image && (
               <p className="text-red-500 text-sm">
-                {errors.imageUrl.message as string}
+                {errors.image.message as string}
               </p>
             )}
           </div>
@@ -131,7 +145,7 @@ const AddProduct = () => {
                 required: "Price is required",
                 min: { value: 0.01, message: "Price must be greater than 0" },
                 pattern: {
-                  value: /^[0-9]+(\.[0-9]{1,2})?$/,
+                  value: /^[0-9]+(\.[0-9]{1,2})?$/, // Allows decimals (e.g., 10.99)
                   message: "Enter a valid price (e.g., 10 or 10.99)",
                 },
               })}
@@ -152,14 +166,7 @@ const AddProduct = () => {
           <div className="col-span-12 sm:col-span-6">
             <label className="block text-sm font-semibold">Quantity</label>
             <input
-              {...register("quantity", {
-                required: "Quantity is required",
-                min: { value: 1, message: "Quantity must be at least 1" },
-                pattern: {
-                  value: /^[1-9]\d*$/, // Ensures only positive whole numbers (no decimals, no negatives)
-                  message: "Quantity must be a positive whole number",
-                },
-              })}
+              {...register("quantity", { required: "Quantity is required" })}
               type="number"
               className={`input input-sm input-bordered w-full ${
                 errors.quantity ? "input-error" : ""
@@ -173,7 +180,7 @@ const AddProduct = () => {
             )}
           </div>
 
-          {/* In Stock (Boolean) */}
+          {/* In Stock */}
           <div className="col-span-12 sm:col-span-6">
             <label className="block text-sm font-semibold">In Stock</label>
             <input
@@ -210,8 +217,8 @@ const AddProduct = () => {
         </div>
 
         <div className="flex justify-end mt-6">
-          <button type="submit" className="btn btn-active">
-            Add Product
+          <button type="submit" className="btn btn-active" disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add Product"}
           </button>
         </div>
       </form>

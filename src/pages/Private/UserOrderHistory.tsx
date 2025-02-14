@@ -7,12 +7,13 @@ import { useCurrentToken } from "../../redux/features/auth/authSlice";
 import { useAppSelector } from "../../redux/hooks";
 import Swal from "sweetalert2";
 import { showToast } from "../../utils/useToast";
+import Loading from "../../components/shared/Loading";
 
 const UserOrderHistory = () => {
   const token = useAppSelector(useCurrentToken);
   const user = useAppSelector((state) => state.auth.user);
 
-  const { data, isLoading, error, refetch } = useGetUserOrdersQuery({
+  const { data, isLoading, refetch } = useGetUserOrdersQuery({
     email: user?.email,
     token,
   });
@@ -47,8 +48,7 @@ const UserOrderHistory = () => {
     });
   };
 
-  if (isLoading) return <p>Loading your order history...</p>;
-  if (error) return <p>Error fetching order history.</p>;
+  if (isLoading) return <Loading/>;
 
   return (
     <div>

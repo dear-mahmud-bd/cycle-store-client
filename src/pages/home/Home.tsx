@@ -1,21 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import Banner from "../../components/home/Banner";
 import Details from "../../components/home/Details";
 import ProductCard from "../../components/Product/ProductCard";
 import { useGetProductsQuery } from "../../redux/features/product/productApi";
+import Loading from "../../components/shared/Loading";
 
 const Home = () => {
-  const { data, isLoading, error } = useGetProductsQuery({ limit: 6 });
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Failed to load products</p>;
-
-  // Get only 6 products
+  const { data, isLoading } = useGetProductsQuery({ limit: 6 });
+  
   const products = data?.data?.products?.slice(0, 6) || [];
+  if (isLoading) return <Loading/>;
 
   return (
     <div>
       <Banner />
+
       <div className="my-10">
         <div className="text-center text-3xl sm:text-4xl/tight md:text-6xl/tight xl:text-[70px]/[84px]">
           <h1 className="font-bold">

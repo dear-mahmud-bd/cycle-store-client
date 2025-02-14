@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { useCurrentToken } from "../../redux/features/auth/authSlice";
@@ -8,10 +9,11 @@ import {
 import { useAppSelector } from "../../redux/hooks";
 import Swal from "sweetalert2";
 import { showToast } from "../../utils/useToast";
+import Loading from "../../components/shared/Loading";
 
 const AllOrders = () => {
   const token = useAppSelector(useCurrentToken);
-  const { data, isLoading, error, refetch } = useGetAllOrdersQuery(token);
+  const { data, isLoading, refetch } = useGetAllOrdersQuery(token);
   // const [updateOrderStatus] = useUpdateOrderStatusMutation();
   console.log(data);
 
@@ -33,18 +35,15 @@ const AllOrders = () => {
           await updateOrderStatus({ orderId, newStatus, token }).unwrap();
           showToast("success", `Order ${newStatus}`);
           refetch();
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
-          console.log(err);
-
           showToast("error", "Something Wrong try again");
         }
       }
     });
   };
 
-  if (isLoading) return <p>Loading orders...</p>;
-  if (error) return <p>Error fetching orders.</p>;
+  if (isLoading) return <div className="my-10"><Loading/></div>;
+  
   return (
     <div className="">
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">

@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useGetProductsQuery } from "../../redux/features/product/productApi";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../../redux/features/product/productApi";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentToken } from "../../redux/features/auth/authSlice";
+import Swal from "sweetalert2";
+import { showToast } from "../../utils/useToast";
+import Loading from "../../components/shared/Loading";
 
 enum BicycleType {
   Mountain = "Mountain",
@@ -12,6 +20,8 @@ enum BicycleType {
 }
 
 const ManageProduct = () => {
+  const token = useAppSelector(useCurrentToken);
+
   // State for filters and pagination
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("price");
@@ -24,7 +34,7 @@ const ManageProduct = () => {
   const limit = 9;
 
   // Fetch products with query params
-  const { data, isLoading, error } = useGetProductsQuery({
+  const { data, isLoading, refetch } = useGetProductsQuery({
     search,
     minPrice,
     maxPrice,
@@ -35,17 +45,35 @@ const ManageProduct = () => {
     page,
     limit,
   });
-
   const products = data?.data?.products || [];
   const pagination = data?.data?.pagination || {};
 
-  if (isLoading)
-    return (
-      <div className="my-20 flex items-center justify-center">
-        <span className="loading loading-ring loading-xl"></span>
-      </div>
-    );
-  if (error) return <p>Failed to load products.</p>;
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+
+  const handleDelete = async (id: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You want to delete this Product'?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33333",
+      cancelButtonColor: "#008000",
+      confirmButtonText: "Yes!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteProduct({ id, token }).unwrap();
+          showToast("success", `Delete This product Successfully`);
+          refetch();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          showToast("error", "Something Wrong!");
+        }
+      }
+    });
+  };
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="">
@@ -147,15 +175,19 @@ const ManageProduct = () => {
                 <td className="border border-gray-300 p-2">
                   {product.inStock ? "In Stock" : "Out of Stock"}
                 </td>
-                <td className="border border-gray-300 p-2">
+                <td className="border border-gray-300 p-1">
                   <Link
                     to={`/dashboard/manage-products/${product._id}`}
-                    className="btn btn-info text-white"
+                    className="btn btn-sm bg-blue-500 text-white px-4 py-1 rounded"
                   >
                     Edit
                   </Link>
-                  <button className="btn bg-red-500 text-white px-3 py-1 rounded ml-2">
-                    Delete
+                  <button
+                    onClick={() => handleDelete(product._id)}
+                    className="btn btn-sm bg-red-500 text-white px-3 py-1 rounded ml-1"
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
                   </button>
                 </td>
               </tr>

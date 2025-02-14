@@ -1,19 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { useGetASingleProductByIdQuery } from "../../redux/features/product/productApi";
+import {
+  useGetASingleProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../redux/features/product/productApi";
+import { useAppSelector } from "../../redux/hooks";
+import { useCurrentToken } from "../../redux/features/auth/authSlice";
+import { showToast } from "../../utils/useToast";
 
 const ManageSingleProduct = () => {
-  const { id } = useParams(); // Get product ID from URL
-  const { data, isLoading } = useGetASingleProductByIdQuery(id); // Fetch product details
-
-  console.log("Product ID:", id);
-  console.log("Fetched Product Data:", data?.data[0]);
+  const token = useAppSelector(useCurrentToken);
+  const { id } = useParams();
+  const { data, isLoading } = useGetASingleProductByIdQuery(id);
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -21,7 +28,7 @@ const ManageSingleProduct = () => {
       type: "",
       brand: "",
       price: 0,
-      imageUrl: "",
+      image: "",
       quantity: 0,
       inStock: false,
       description: "",
@@ -34,29 +41,47 @@ const ManageSingleProduct = () => {
         name: data.data[0].name || "",
         type: data.data[0].type || "",
         brand: data.data[0].brand || "",
-        price: data.data[0].price ? parseFloat(data.data[0].price) : 0, // Ensure number
-        imageUrl: data.data[0].image || "",
+        price: data.data[0].price ? parseFloat(data.data[0].price) : 0,
+        image: data.data[0].image || "",
         quantity: data.data[0].quantity
           ? parseInt(data.data[0].quantity, 10)
-          : 0, // Ensure number
+          : 0,
         inStock: data.data[0].inStock || false,
         description: data.data[0].description || "",
       });
     }
   }, [data, reset]);
 
+  watch("quantity", data?.data[0]?.quantity || 0);
+  const [inStock, setInStock] = useState(false);
+  // Update inStock based on quantity
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const qty = Number(e.target.value);
+    setInStock(qty > 0);
+    setValue("inStock", qty > 0);
+  };
+
   const onSubmit = async (formData: FieldValues) => {
     const updatedData = {
+      quantity: parseInt(formData.quantity, 10),
       ...formData,
     };
+    console.log("Updated Data:-----------------> ", updatedData);
+    try {
+      await updateProduct({ id, updatedData, token }).unwrap();
+      showToast("success", "Product updated successfully!");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      console.log(error);
 
-    console.log("Updated Data:", updatedData);
+      showToast("success", error?.data?.message || "Failed to update product.");
+    }
   };
 
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="p-5">
+    <div className="">
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">
         <h1 className="text-center text-4xl font-bold">Manage Products</h1>
       </div>
@@ -134,21 +159,22 @@ const ManageSingleProduct = () => {
           <div className="col-span-12 sm:col-span-4">
             <label className="block text-sm font-semibold">Image URL</label>
             <input
-              {...register("imageUrl", {
+              {...register("image", {
                 required: "Image URL is required",
                 pattern: {
                   value: /^(https?:\/\/.*\.(?:jpeg|jpg|png|gif|bmp|webp))$/i,
-                  message: "Enter a valid image URL",
+                  message:
+                    "Enter a valid image URL (i.e., .jpeg, .jpg, .png, .gif, .bmp, .webp)",
                 },
               })}
               type="text"
               className={`input input-sm input-bordered w-full ${
-                errors.imageUrl ? "input-error" : ""
+                errors.image ? "input-error" : ""
               }`}
             />
-            {errors.imageUrl && (
+            {errors.image && (
               <p className="text-red-500 text-sm">
-                {errors.imageUrl.message as string}
+                {errors.image.message as string}
               </p>
             )}
           </div>
@@ -194,6 +220,7 @@ const ManageSingleProduct = () => {
               className={`input input-sm input-bordered w-full ${
                 errors.quantity ? "input-error" : ""
               }`}
+              onChange={handleQuantityChange}
             />
             {errors.quantity && (
               <p className="text-red-500 text-sm">
@@ -208,7 +235,9 @@ const ManageSingleProduct = () => {
             <input
               {...register("inStock")}
               type="checkbox"
+              checked={inStock}
               className="checkbox checkbox-primary"
+              readOnly
             />
           </div>
 
@@ -238,7 +267,7 @@ const ManageSingleProduct = () => {
 
         <div className="flex justify-end mt-6">
           <button type="submit" className="btn btn-active">
-            Update Product
+            {isUpdating ? "Updating..." : "Update Product"}
           </button>
         </div>
       </form>

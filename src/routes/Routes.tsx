@@ -15,20 +15,20 @@ import AllUsers from "../pages/Admin/AllUsers";
 import AddProduct from "../pages/Admin/AddProduct";
 import ManageProduct from "../pages/Admin/ManageProduct";
 import ManageSingleProduct from "../pages/Admin/ManageSingleProduct";
+import NotFound from "../components/shared/NotFound";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App></App>,
-    errorElement: <h1>Not Found</h1>,
+    errorElement: <NotFound/>,
     children: [
       { path: "/", element: <Home /> },
       { path: "/all-cycle", element: <AllProducts /> },
       { path: "/all-cycle/:id", element: <ProductDetails /> },
       { path: "/sign-in", element: <SignIn /> },
       { path: "/sign-up", element: <SignUp /> },
-      { path: "*", element: <h1>Not Found</h1> },
-
+      { path: "*", element: <NotFound/> },
     ],
   },
   {
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         <Dashboard/>
       </ProtectedRoute>
     ),
-    errorElement: <h1>Not Found</h1>,
+    errorElement: <NotFound/>,
     children: [
       { path: "", element: <UserProfile/> },
       { path: "profile", element: <UserProfile/> },
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
       { path: 'manage-products', element: <AdminRoute role="admin"> <ManageProduct/> </AdminRoute> },
       { path: 'manage-products/:id', element: <AdminRoute role="admin"> <ManageSingleProduct/> </AdminRoute> },
 
-      { path: "*", element: <h1>Not Found</h1> },
+      { path: "*", element: <NotFound/> },
     ],
   },
 ]);
