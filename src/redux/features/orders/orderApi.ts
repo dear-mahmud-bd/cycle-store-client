@@ -30,6 +30,16 @@ const productApi = baseApi.injectEndpoints({
         body: { status: newStatus },
       }),
     }),
+    createOrder: builder.mutation({
+      query: ({ orderData, token }) => ({
+        url: "/payment/initiate",
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: orderData,
+      }),
+    }),
   }),
 });
 
@@ -37,4 +47,5 @@ export const {
   useGetAllOrdersQuery,
   useGetUserOrdersQuery,
   useUpdateOrderStatusMutation,
+  useCreateOrderMutation,
 } = productApi;

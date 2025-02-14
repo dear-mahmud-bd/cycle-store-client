@@ -16,6 +16,7 @@ import AddProduct from "../pages/Admin/AddProduct";
 import ManageProduct from "../pages/Admin/ManageProduct";
 import ManageSingleProduct from "../pages/Admin/ManageSingleProduct";
 import NotFound from "../components/shared/NotFound";
+import PaymentFailed from "../pages/Private/PaymentFailed";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,8 @@ const router = createBrowserRouter([
       { path: 'manage-products/:id', element: <AdminRoute role="admin"> <ManageSingleProduct/> </AdminRoute> },
 
       { path: "*", element: <NotFound/> },
+
+      { path: "payment-fail", element: <PaymentFailed/> },
     ],
   },
 ]);
