@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useForm, FieldValues } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignupMutation } from "../../redux/features/auth/authApi";
@@ -21,9 +22,9 @@ const SignUp = () => {
     };
 
     try {
-      const res = await signup(userInfo).unwrap();
+      await signup(userInfo).unwrap();
       sweetToast("Success", "Account created successful! Please Sign in.","success");
-      console.log("Signup Response: ", res);
+      // console.log("Signup Response: ", res);
       navigate('/sign-in');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

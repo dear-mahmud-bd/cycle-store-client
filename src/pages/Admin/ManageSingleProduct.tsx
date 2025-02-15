@@ -66,15 +66,15 @@ const ManageSingleProduct = () => {
       quantity: parseInt(formData.quantity, 10),
       ...formData,
     };
-    console.log("Updated Data:-----------------> ", updatedData);
+    // console.log("Updated Data:-----------------> ", updatedData);
     try {
       await updateProduct({ id, updatedData, token }).unwrap();
       showToast("success", "Product updated successfully!");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
-      showToast("success", error?.data?.message || "Failed to update product.");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      showToast("success", (error as any)?.data?.message || "Failed to update product.");
     }
   };
 

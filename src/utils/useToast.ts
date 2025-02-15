@@ -1,7 +1,10 @@
-import { toast, ToastOptions, TypeOptions } from "react-toastify";
+import { toast, ToastOptions } from "react-toastify";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
-export const showToast = (type: TypeOptions, message: string) => {
+export const showToast = (
+  type: "success" | "error" | "info" | "warning",
+  message: string
+) => {
   const options: ToastOptions = {
     position: "top-center",
     autoClose: 4000,

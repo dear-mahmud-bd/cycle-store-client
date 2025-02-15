@@ -15,7 +15,7 @@ const AllOrders = () => {
   const token = useAppSelector(useCurrentToken);
   const { data, isLoading, refetch } = useGetAllOrdersQuery(token);
   // const [updateOrderStatus] = useUpdateOrderStatusMutation();
-  console.log(data);
+  // console.log(data);
 
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
@@ -30,7 +30,7 @@ const AllOrders = () => {
       confirmButtonText: "Yes!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(orderId, newStatus);
+        // console.log(orderId, newStatus);
         try {
           await updateOrderStatus({ orderId, newStatus, token }).unwrap();
           showToast("success", `Order ${newStatus}`);

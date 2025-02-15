@@ -16,7 +16,7 @@ const Dashboard = () => {
   const user = verifyToken(currentToken as string);
   const isAdmin =
     user?.role === currentUser?.role && currentUser?.role === "admin";
-  console.log(isAdmin);
+  // console.log(isAdmin);
 
   const addClass = (isActive: boolean) => (isActive ? "bg-gray-200" : "");
   return (

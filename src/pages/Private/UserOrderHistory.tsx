@@ -8,6 +8,7 @@ import { useAppSelector } from "../../redux/hooks";
 import Swal from "sweetalert2";
 import { showToast } from "../../utils/useToast";
 import Loading from "../../components/shared/Loading";
+import { useSearchParams } from "react-router-dom";
 
 const UserOrderHistory = () => {
   const token = useAppSelector(useCurrentToken);
@@ -17,11 +18,17 @@ const UserOrderHistory = () => {
     email: user?.email,
     token,
   });
-  console.log(data?.data);
-  
+  // console.log(data?.data);
 
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
+
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get("orderId");
+  const isOrderApproved = data?.data?.some(
+    (order: any) => order._id === orderId && order.status === "approved"
+  );
+  // console.log(orderId, isOrderApproved);
 
   // Handle status change
   const handleStatusChange = async (orderId: string, newStatus: string) => {
@@ -35,7 +42,7 @@ const UserOrderHistory = () => {
       confirmButtonText: "Yes!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(orderId, newStatus);
+        // console.log(orderId, newStatus);
         try {
           await updateOrderStatus({ orderId, newStatus, token }).unwrap();
           showToast("success", "Order Cancelled");
@@ -48,13 +55,25 @@ const UserOrderHistory = () => {
     });
   };
 
-  if (isLoading) return <Loading/>;
+  if (isLoading) return <Loading />;
 
   return (
     <div>
       <div className="mb-5 py-5 bg-gray-200 rounded-lg">
         <h1 className="text-center text-4xl font-bold">My Order History</h1>
       </div>
+
+      {/* payment confirmation additional div here... */}
+      {isOrderApproved && (
+        <div className="p-5 mb-5 bg-green-200 border border-green-500 rounded">
+          <h2 className="text-xl font-semibold text-green-800">
+            🎉 Payment Successful!
+          </h2>
+          <p className="text-green-700">
+            Your order (ID: {orderId}) has been approved.
+          </p>
+        </div>
+      )}
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
@@ -93,8 +112,12 @@ const UserOrderHistory = () => {
                   >
                     <option value="pending">Pending</option>
                     <option value="cancelled">Cancelled</option>
-                    <option value="approved" disabled>Approved</option>
-                    <option value="delivered" disabled>Delivered</option>
+                    <option value="approved" disabled>
+                      Approved
+                    </option>
+                    <option value="delivered" disabled>
+                      Delivered
+                    </option>
                   </select>
                 </td>
               </tr>

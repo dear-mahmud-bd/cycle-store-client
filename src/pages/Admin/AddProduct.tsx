@@ -34,13 +34,14 @@ const AddProduct = () => {
         price: parseFloat(data.price),
         quantity: parseInt(data.quantity, 10),
       };
-      console.log(productData);
+      // console.log(productData);
 
       await createProduct({ productData, token }).unwrap();
       showToast("success", "Product Added Succesfully!");
       reset();
     } catch (error) {
-      showToast("error", error?.data?.message || "Failed to add product.");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      showToast("error", (error as any)?.data?.message || "Failed to add product.");
     }
   };
 

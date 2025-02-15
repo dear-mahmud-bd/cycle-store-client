@@ -16,7 +16,7 @@ const ProductCard = ({ product }: ProductProps) => {
   const { _id, name, brand, inStock, price, type, image } = product;
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-[10px] bg-[url(../../../public/collection-bg.jpg)] bg-cover bg-no-repeat">
+    <div className="border border-gray-100 flex flex-col overflow-hidden rounded-[10px] bg-[url(../../../public/collection-bg.jpg)] bg-cover bg-no-repeat">
       <div className="group flex h-52 shrink-0 items-center justify-center p-2 ">
         <img
           src={image ? image : "https://i.ibb.co.com/HLBzrLCg/bycycle.jpg"}

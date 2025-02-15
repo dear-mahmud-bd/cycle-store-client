@@ -8,6 +8,7 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import Loading from "../shared/Loading";
 import { useCreateOrderMutation } from "../../redux/features/orders/orderApi";
+import { showToast } from "../../utils/useToast";
 
 const ProductDetails = () => {
   const token = useAppSelector(useCurrentToken);
@@ -41,14 +42,15 @@ const ProductDetails = () => {
   const handleOrderNow = () => {
     setValue("productId", id as string);
     setValue("productName", product?.name);
-    const modal = document.getElementById("order_modal") as HTMLDialogElement | null;
+    const modal = document.getElementById(
+      "order_modal"
+    ) as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
     } else {
       console.error("Modal element not found!");
     }
   };
-  
 
   const onSubmit = async (formData: FieldValues) => {
     try {
@@ -58,13 +60,12 @@ const ProductDetails = () => {
         quantity: parseInt(formData.quantity),
         totalPrice: totalPrice,
       };
-      console.log("Order Details: ", orderData);
+      // console.log("Order Details: ", orderData);
       const response = await createOrder({ orderData, token }).unwrap();
       window.location.replace(response.url);
-
-      console.log("Order Response:", response);
     } catch (err) {
-      console.error("Order Error:", err);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      showToast("error", (err as any)?.data?.message || "Something Wrong!");
     }
   };
 

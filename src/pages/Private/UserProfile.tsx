@@ -66,7 +66,8 @@ const UserProfile = () => {
       showToast("success", "Password Updated Successfully");
       passReset();
     } catch (error) {
-      showToast("error", error?.data?.message || "Failed to update password");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      showToast("error", (error as any)?.data?.message || "Failed to update password");
     }
   };
 
@@ -84,7 +85,9 @@ const UserProfile = () => {
               alt="User Profile"
               className="w-32 h-32 rounded-full shadow-xl"
             />
-            <h2 className="text-2xl font-semibold mt-2">{data?.data?.name}</h2>
+            <h2 className="text-2xl font-semibold mt-2">
+              {isLoading ? "Loading" : `${data?.data?.name}`}
+            </h2>
             <p className="text-gray-600">{user?.email}</p>
           </div>
         </div>

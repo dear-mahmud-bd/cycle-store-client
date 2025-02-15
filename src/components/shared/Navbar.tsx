@@ -15,7 +15,7 @@ const Navbar = () => {
   
   const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
-  console.log(user);
+  // console.log(user);
 
   const handleSignOut = () => {
     Swal.fire({
@@ -40,6 +40,11 @@ const Navbar = () => {
       <li>
         <NavLink to={`/all-cycle`} className={({ isActive }) => addClass(isActive)}>
           <p>All Cycle</p>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to={`/about-us`} className={({ isActive }) => addClass(isActive)}>
+          <p>About Us</p>
         </NavLink>
       </li>
     </>

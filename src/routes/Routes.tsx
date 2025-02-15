@@ -17,6 +17,7 @@ import ManageProduct from "../pages/Admin/ManageProduct";
 import ManageSingleProduct from "../pages/Admin/ManageSingleProduct";
 import NotFound from "../components/shared/NotFound";
 import PaymentFailed from "../pages/Private/PaymentFailed";
+import AboutUs from "../pages/AboutUs/AboutUs";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/all-cycle", element: <AllProducts /> },
+      { path: "/about-us", element: <AboutUs /> },
       { path: "/all-cycle/:id", element: <ProductDetails /> },
       { path: "/sign-in", element: <SignIn /> },
       { path: "/sign-up", element: <SignUp /> },
